@@ -1,0 +1,37 @@
+<launch>
+  <arg name="laser_enabled" default="true"/>
+  <arg name="ur5_enabled" default="false"/>
+  <arg name="kinect_enabled" default="false"/>
+  <arg name="husky_name" default="husky"/>
+  
+  <group ns="$(arg husky_name)_1">
+      <arg name="xinit"  default="-3.0" />
+      <arg name="yinit"  default="2.0" />
+      <arg name="zinit"  default="0.3" />
+      
+      <include file="$(find wall_following_assignment)/launch/spawn_husky.launch">
+           <arg name="laser_enabled" value="$(arg laser_enabled)"/>
+           <arg name="ur5_enabled" value="$(arg ur5_enabled)"/>
+           <arg name="kinect_enabled" value="$(arg kinect_enabled)"/>
+           <arg name="x" value="$(arg xinit)"/>
+           <arg name="y" value="$(arg yinit)"/>
+           <arg name="z" value="$(arg zinit)"/>
+           <arg name="robot_name" value="$(arg husky_name)_1"/>
+           <arg name="tf_prefix" value="$(arg husky_name)_1"/>
+     </include>
+
+     <include file="$(find wall_following_assignment)/launch/teleop.launch">
+           <arg name="joy_dev" value="/dev/input/js0"/>
+           <arg name="joystick" value="true"/>   
+     </include>
+        
+     <node pkg="tf" type="static_transform_publisher" name="$(arg husky_name)_1_odom_to_world" 
+           args="$(arg xinit) $(arg yinit) $(arg zinit) 0 0 0 map $(arg husky_name)_1/odom 100" output="screen" />
+
+  </group>
+
+  <!-- This should only be activated if we want the ground truth odometry to be used instead of robot_localization in control.launch -->
+ <node pkg="wall_following_assignment" type="ground_truth_tf_publisher.py" name="wall_following_assignment" output="screen" />
+
+
+</launch>

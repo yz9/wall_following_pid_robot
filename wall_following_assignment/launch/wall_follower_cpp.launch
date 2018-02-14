@@ -1,0 +1,6 @@
+<launch>
+   <node pkg="wall_following_assignment" type="wall_follower_node" output="screen" name="wall_follower">
+         <param name="forward_speed" value="1.0" />
+         <param name="desired_distance_from_wall" value="1.0" />
+   </node>
+</launch>
